@@ -1,0 +1,128 @@
+---
+title: "ProblemSet 08"
+author: "Name Surname: Ahmet Yasin Tazegül, Student ID: 070200458"
+date: now
+date-format: "[This is rendered at:] DD MMMM YYYY, hh:mm A"
+format:
+  html:
+    toc: true
+    theme: flatly
+editor: source
+---
+
+## Question1
+
+**P-value:** The probability of observing a result (or more extreme) **given that the null hypothesis is true**. In statistical testing, a low P-value (e.g., less than 0.05) provides evidence against the null hypothesis, suggesting the observed result is unlikely to have occurred by chance. Conversely, a high P-value indicates weak evidence against the null hypothesis.
+
+**Nonlinear population regression model:**A statistical model where the relationship between the dependent variable and one or more independent variables is not linear (i.e., not a straight line). Examples include polynomial, exponential, and logistic models. These models are used to capture more complex relationships than linear models.
+
+**Polynomial regression model of degree** $r$ **:** A specific type of nonlinear regression model where the relationship between the variables is expressed as a polynomial of degree r. For example, r=2 represents a quadratic model (U-shaped), and r=3 represents a cubic model (S-shaped).
+
+**Quadratic regression model:**A specific polynomial regression model (r=2) representing a U-shaped or parabolic relationship between the variables. It's used for situations where the dependent variable increases or decreases to a maximum/minimum before changing direction.
+
+**Cubic regression model:**A specific polynomial regression model (r=3) representing a more complex S-shaped relationship between the variables. It's useful for situations where the dependent variable initially increases/decreases, then changes direction, and continues in the same direction.
+
+**Linear-log model:**A combination of a linear model and a logarithmic transformation of the dependent variable. It's used when the relationship between the variables is exponential but not easily captured by a simple exponential model.
+
+**Log-linear model:**A combination of a linear model and logarithmic transformations of both the dependent and independent variables. It's used when the relationship between the variables is multiplicative but not easily captured by a simple linear model.
+
+**Log-log model:**A combination of logarithmic transformations of both the dependent and independent variables. It's used when the relationship between the variables is power-law but not easily captured by a simple linear model.
+
+**Elasticity:**In economics and other fields, it measures the **proportional change** in one variable in response to a **change in another variable**. It assesses the sensitivity of one variable to changes in another. In regression models, elasticity can be calculated for the dependent variable with respect to each independent variable.
+
+## Question-2
+
+What is the effect of heteroskedasticity on the OLS estimator in a multiple linear regression model?
+
+Explanation:Heteroskedasticity has serious consequences for the OLS estimator. Although the OLS estimator remains unbiased, the estimated SE is wrong. Because of this, confidence intervals and hypotheses tests cannot be relied on. In addition, the OLS estimator is no longer BLUE.
+
+<div>
+
+![***Homoskedasticity in a Simple Model***](https://www3.wabash.edu/econometrics/EconometricsBook/chap19_Fig1911.gif)
+
+</div>
+
+![***Heteroskedasticity in a Simple Model***](https://www3.wabash.edu/econometrics/EconometricsBook/chap19_clip_image006_0000.gif)
+
+## Question-3
+
+### Question-3a
+
+```{r}
+library(stargazer)
+library(readxl)
+library(modelsummary)
+library(car)
+library(sandwich)
+# Import data
+mydata <- read_excel("ch8_cps.xlsx",
+                     col_names = TRUE,
+                     skip = 0)
+stargazer(data.frame(mydata),
+          type = "text",
+          title="Descriptive statistics",
+          align = TRUE)
+```
+
+### Question-3b
+
+```{r}
+rb<-lm(log(ahe)~ log(age)+female+yrseduc,data=mydata)
+
+modelsummary(rb,stars= TRUE)
+```
+
+***Log-Linear Model***
+
+When there is 1 unit change in age ,ahe is predicted to increase by 0.42%
+
+### Question-3c
+
+```{r}
+
+rb$coefficients["female"]
+```
+
+### Question-3d
+
+```{r}
+rd<-lm(log(ahe)~log(age)+female+yrseduc,data = mydata)
+modelsummary(rd,stars = TRUE)
+```
+
+***Log-Log Model***
+
+when age increases from 25 to 26, it means there is 4% raise in age so that will increase ahe by:
+
+```{r}
+0.424*4/100 #percent
+```
+
+and for 33 to 34:
+
+```{r}
+0.424*3/100 #percent
+```
+
+### Question-3e
+
+```{r}
+re<-lm(log(ahe)~age+age^2+female+yrseduc,data = mydata)
+modelsummary(re,stars = TRUE)
+```
+
+***Log-Linear Model***
+
+When there is one unit change in age, the ahe increases by 0.009 percent.
+
+### Question-3f
+
+Explanation: They have same adj.$R^2$ so it doesn't matter.
+
+### Question-3g
+
+Explanation:I'd prefer model b because it has better adj. $R^2$ score
+
+### Question-3h
+
+Explanation:I'd prefer model d because of better adj. $R^2$ score
