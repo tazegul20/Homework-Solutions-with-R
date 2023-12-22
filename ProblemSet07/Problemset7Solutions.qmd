@@ -1,0 +1,109 @@
+---
+title: "ProblemSet 07"
+author: 'Name Surname:Ahmet Yasin Tazegül'
+Student ID: '070200458'
+date: "now"
+subtitle: "ECN 301E - Fall 2023"
+format: 
+  html: 
+    toc: true
+editor: source
+---
+
+## Question-1
+
+-   **Joint hypothesis:** A statistical hypothesis that involves more than one parameter. It is used to test whether two or more parameters are jointly significant in a regression model.
+
+-   **F-statistic:** A statistical test that compares the variance explained by the regression model to the variance not explained by the model. It is used to test the overall significance of the regression model 3.
+
+-   **Homoskedasticity-only F-statistic:** A test that is used to determine whether the variance of the residuals in a regression model is constant (homoskedastic) across all levels of the independent variable. It is used to test the null hypothesis that the variance of the residuals is constant against the alternative hypothesis that the variance of the residuals is not constant 4.
+
+-   **95% Confidence interval:**A 95% confidence interval is a range of values that is expected to contain the true value of a population parameter 95% of the time if the experiment is repeated or the population is resampled in the same way
+
+-   **Omitted variables:** Variables that are not included in a regression model but are related to both the dependent variable and the independent variable(s). Omitted variables can lead to omitted variable bias, which can cause the coefficients of the independent variables to be biased 6[7](https://www.statology.org/omitted-variable-bias/).
+
+-   **Control variables:** Variables that are included in a regression model to control for the effects of other variables. They are used to isolate the effect of the independent variable(s) on the dependent variable 6.
+
+-   **Conditional mean independence:** A statistical assumption that states that the expected value of the error term in a regression model is zero, given the values of the independent variables 6.
+
+-   **Homoskedasticity:** A statistical assumption that states that the variance of the error term in a regression model is constant across all levels of the independent variable(s) 8.
+
+-   **Heteroskedasticity:** A statistical assumption that states that the variance of the error term in a regression model is not constant across all levels of the independent variable(s)
+
+## Question-2
+
+### Question-2a
+
+```{r}
+library(stargazer)    # for stargazer()
+library(readxl)       # for read_excel()
+library(modelsummary) # for modelsummary()
+library(car)          # for linearHypothesis()
+library(sandwich)
+# Import data
+mydata <- read_excel("ch8_cps.xlsx",
+                     col_names = TRUE,
+                     skip = 0)
+
+q2a<-stargazer(data.frame(mydata),
+          type = "text",
+          title="Descriptive statistics",
+          align = TRUE)
+```
+
+### Question-2b
+
+```{r}
+r1 <- lm(ahe~yrseduc+female,data =mydata)
+vcov <- vcovHC(r1, type = "HC1")
+show(vcov)
+
+modelsummary(list("Homoskedastic Model" = r1,
+                  "Heteroskedastic Model" = r1),
+             vcov = list(vcov,"HC1"),
+             stars = TRUE)
+
+-6.385/0.124
+2*pnorm(-51.49194,mean=0,sd=1)
+```
+
+### Question-2c
+
+```{r}
+r2<- lm(ahe~yrseduc+female+age,data =mydata)
+modelsummary(list("Homoskedastic Model" = r2,
+                  "Heteroskedastic Model" = r2),
+             vcov = list(vcov,"HC1"),
+             stars = TRUE)
+```
+
+### Question-2d
+
+We can use the F-test to test a hypothesis that imposes two or more restrictions on the regression coefficients.
+
+```{r}
+r3<- lm(ahe~yrseduc+female+age+northeast+midwest+south,data =mydata)
+modelsummary(list("Homoskedastic Model" = r3,
+                  "Heteroskedastic Model" = r3),
+             vcov = list(vcov,"HC1"),
+             stars = TRUE)
+
+linearHypothesis(r3,
+                 c("northeast = 0","midwest=0","south=0"),
+                 white.adjust="hc1")
+
+
+```
+
+*p value \> 0.05 so we fail to reject* $H_0$
+
+### Question-2e
+
+```{r}
+linearHypothesis(r2,
+                 "yrseduc=age",
+                 white.adjust="hc1")
+
+```
+
+*p value \> 0.05 so we fail to reject* $H_0$
