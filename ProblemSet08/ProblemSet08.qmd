@@ -1,0 +1,79 @@
+---
+title: "ProblemSet 08"
+author: "Name Surname: X Y, Student ID: 123"
+date: now
+date-format: "[This is rendered at:] DD MMMM YYYY, hh:mm A"
+format:
+  html:
+    toc: true
+    theme: flatly
+editor: source
+---
+
+# Question 1
+
+Define the following terms in your own words.
+
+a. **P-value:**
+a. **Nonlinear population regression model:** 
+a. **Polynomial regression model of degree $r$:** 
+a. **Quadratic regression model:** 
+a. **Cubic regression model:** 
+a. **Linear-log model:** 
+a. **Log-linear model:** 
+a. **Log-log model:** 
+a. **Elasticity:** 
+
+# Question 2
+
+What is the effect of heteroskedasticity on the OLS estimator in a multiple linear regression model? Explain.
+
+# Question 3
+
+In this exercise, we will work with the data file `ch8_cps.xlsx`. The data is collected by the Bureau of Labor Statistics in the U.S. Department of Labor through a survey known as Current Population Survey, and contain data on labor force characteristics of the population, including the level of employment, unemployment, and earnings. Approximately $60.000$ randomly selected U.S. households are surveyed each month. The sample is chosen by randomly selecting addresses from a database comprised of addresses from the most recent decennial census augmented with data on new housing units constructed after the last census. Our data are from the March 2016 survey and include the following variables.
+
+- `female`: 1 if female; 0 if male 
+- `age`: Age (in Years)
+- `ahe`: Average Hourly Earnings in 2015 
+- `yrseduc`: years of educational attainment 
+- `northeast`: 1 if from the Northeast, 0 otherwise
+- `Midwest`: 1 if from the Midwest, 0 otherwise
+- `south`: 1 if from the South, 0 otherwise
+- `west`: 1 if from the West, 0 otherwise
+
+Use the following code chunk to import data.
+
+```{r}
+#| warning: false
+#| message: false
+#install.packages("stargazer")
+#install.packages("modelsummary")
+#install.packages("readxl")
+#install.packages("car)
+#install.packages("sandwich")
+library(stargazer)
+library(readxl)
+library(modelsummary)
+library(car)
+library(sandwich)
+# Import data
+mydata <- read_excel("ch8_cps.xlsx",
+                     col_names = TRUE,
+                     skip = 0)
+```
+
+(a) Use the `stargazer` or `modelsummary` package to generate a table of descriptive statistics.
+
+(b) Run a regression of the logarithm of average hourly earnings, `ln(ahe)`, on `age`, `female`, and `yrseduc`. Interpret the estimated coefficient on `age`. If `age` increases from $25$ to $26$, how are earnings expected to change? If `age` increases from $33$ to $34$, how are earnings expected to change?
+
+(c) Consider the regression model in part (b). Interpret the coefficient on `female`.
+
+(d) Run a regression of the logarithm of average hourly earnings, `ln(ahe)`, on `ln(age)`, `female`, and `yrseduc`. Interpret the estimated coefficient on `ln(age)`. If `age` increases from $25$ to $26$, how are earnings expected to change? If `age` increases from $33$ to $34$, how are earnings expected to change?
+
+(e) Run a regression of the logarithm of average hourly earnings, `ln(ahe)`, on `age`, `age^2`, `female`, and `yrseduc`. Interpret the estimated coefficient on `age`. If `age` increases from $25$ to $26$, how are earnings expected to change? If `age` increases from $33$ to $34$, how are earnings expected to change?
+
+(f) Do you prefer regression in part (d) to the regression in part (b)? Explain.
+
+(g) Do you prefer regression in part (e) to the regression in part (b)? Explain.
+
+(h) Do you prefer regression in part (e) to the regression in part (d)? Explain. 
